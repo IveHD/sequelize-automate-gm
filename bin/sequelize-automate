@@ -1,0 +1,175 @@
+#!/usr/bin/env node
+
+/* eslint-disable no-console */
+const path = require('path');
+const fs = require('fs');
+const yargs = require('yargs');
+const _ = require('lodash');
+const inquerer = require('inquirer');
+const Sequelize = require('sequelize');
+const Automate = require('..');
+
+function getDefaultPort(dialect) {
+  switch (dialect.toLowerCase()) {
+    case 'mssql':
+      return 1433;
+    case 'postgres':
+      return 5432;
+    default:
+      return 3306;
+  }
+}
+
+const { argv } = yargs
+  .usage('Usage: sequelize-automate -t [type] -h <host> -d <database> -u <user> -p [password] -P [port]  -e [dialect] -o [/path/to/models] -c [/path/to/config]')
+  .help()
+  .option('type', {
+    alias: 't',
+    describe: 'Which code style want to generate.',
+    choices: ['js', 'ts', 'egg', 'midway', '@ali/midway'],
+  })
+  .option('host', {
+    alias: 'h',
+    describe: 'IP/Hostname for the database.',
+    type: 'string',
+    default: 'localhost',
+  })
+  .option('database', {
+    alias: 'd',
+    describe: 'Database name.',
+    type: 'string',
+    default: 'test',
+  })
+  .option('user', {
+    alias: 'u',
+    describe: 'Username for database.',
+    type: 'string',
+    default: 'root',
+  })
+  .option('password', {
+    alias: 'p',
+    describe: 'Password for database.',
+    type: 'string',
+    default: 'root',
+  })
+  .option('port', {
+    alias: 'P',
+    describe: 'Port number for database. e.g. MySQL/MariaDB: 3306, Postgres: 5432, MSSQL: 1433',
+    type: 'number',
+  })
+  .option('dialect', {
+    alias: 'e',
+    describe: 'The dialect/engine that you\'re using: mysql, sqlite, postgres, mssql',
+    choices: ['mysql', 'sqlite', 'postgres', 'mssql'],
+    default: 'mysql',
+  })
+  .option('output', {
+    alias: 'o',
+    describe: 'What directory to place the models.',
+    type: 'string',
+    default: 'models',
+  })
+  .option('camel', {
+    alias: 'C',
+    describe: 'Use camel case to name models',
+    type: 'boolean',
+    default: false,
+  })
+  .option('config', {
+    alias: 'c',
+    describe: 'Sequelize automate config file, see README.md',
+    type: 'string',
+  })
+  .option('emptyDir', {
+    alias: 'r',
+    type: 'boolean',
+    default: false,
+    describe: 'Remove all files in `dir` and `typesDir` directories before generate models.',
+  })
+  .option('match', {
+    alias: 'm',
+    type: 'string',
+    default: null,
+    describe: 'Match tables using given RegExp.',
+  });
+
+let configFile = null;
+
+if (argv.c) {
+  const filePath = path.resolve(argv.c);
+  if (fs.existsSync(filePath)) {
+    // eslint-disable-next-line global-require,import/no-dynamic-require
+    configFile = require(filePath);
+  }
+}
+
+const dbOptions = _.assign({}, {
+  database: argv.d,
+  username: argv.u,
+  password: argv.p,
+  dialect: argv.e,
+  host: argv.h || '127.0.0.1',
+  port: argv.P || getDefaultPort(argv.e),
+}, configFile ? configFile.dbOptions : {});
+
+const options = _.assign({}, {
+  type: argv.t || 'js',
+  camelCase: !!argv.C,
+  dir: argv.o || path.resolve(`${process.cwd()}/models`),
+  emptyDir: !!argv.r,
+}, configFile ? configFile.options : {});
+
+const dbOptionsCopy = _.cloneDeep(dbOptions);
+dbOptionsCopy.password = '****';
+console.log('Database options:', JSON.stringify(dbOptionsCopy));
+console.log('Automate options:', JSON.stringify(options));
+
+// const automate = new Automate(dbOptions, options);
+// automate.run().then(() => {
+//   console.log('Done!');
+// }).catch((e) => {
+//   console.log(e);
+// });
+
+async function run() {
+  if (!options.tables) {
+    const answer = await inquerer.prompt([{
+      name: 'allTable', type: 'list', message: '选择要生成的表', choices: ['部分表', '所有表'],
+    }]);
+    if (answer.allTable === '部分表') {
+      const sequelize = new Sequelize(dbOptions);
+      const queryInterface = sequelize.getQueryInterface();
+      const allTableNames = await queryInterface.showAllTables();
+      const allTables = _.map(allTableNames, (tableName) => (
+        _.isPlainObject(tableName) ? tableName.tableName : tableName
+      ));
+      const selectedTables = await inquerer.prompt([{
+        name: 'selectedTables', type: 'checkbox', message: '选择要生成的表', choices: allTables, loop: false,
+      }]);
+      if (!selectedTables || selectedTables.selectedTables.length === 0) {
+        console.log('未选择任何表，流程结束');
+        process.exit(0);
+      }
+      options.tables = selectedTables.selectedTables;
+      options.emptyDir = false; // 选择了部分表，不应该清空整个文件夹
+    }
+  }
+
+  const fileUpdateTypes = ['增量更新(读取源文件)', '完全替换'];
+  const [increment] = fileUpdateTypes;
+  const type = await inquerer.prompt([{
+    name: 'type', type: 'list', message: '文件更新类型', choices: fileUpdateTypes,
+  }]);
+  if (type.type === increment) {
+    options.fileUpdateType = 'INCREMENT';
+    options.emptyDir = false; // 选择了增量更新，不应该清空整个文件夹
+  }
+  const automate = new Automate(dbOptions, options);
+  automate.run().then(() => {
+    console.log('Done!');
+    process.exit(0);
+  }).catch((e) => {
+    console.log(e);
+  });
+}
+run();

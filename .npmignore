@@ -1,0 +1,13 @@
+test/models/*.js
+*.swp
+.idea
+.DS_Store
+node_modules
+npm-debug.log
+*~
+database.sqlite
+.nyc_output
+coverage/
+coverage-*/
+.idea
+.tmp

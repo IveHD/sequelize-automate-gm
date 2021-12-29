@@ -1,0 +1,69 @@
+'use strict';
+
+module.exports = app => {
+  const DataTypes = app.Sequelize;
+  const sequelize = app.model;
+  const attributes = {
+    id: {
+      type: DataTypes.BIGINT,
+      allowNull: false,
+      defaultValue: null,
+      primaryKey: false,
+      autoIncrement: false,
+      comment: null,
+      field: 'id',
+      unique: 'uk_id',
+    },
+    name: {
+      type: DataTypes.STRING(32),
+      allowNull: false,
+      defaultValue: null,
+      primaryKey: false,
+      autoIncrement: false,
+      comment: 'user name',
+      field: 'name',
+    },
+    email: {
+      type: DataTypes.STRING(32),
+      allowNull: false,
+      defaultValue: null,
+      primaryKey: false,
+      autoIncrement: false,
+      comment: 'user email',
+      field: 'name',
+    },
+    createdAt: {
+      type: DataTypes.DATE,
+      allowNull: false,
+      defaultValue: null,
+      primaryKey: false,
+      autoIncrement: false,
+      comment: 'created time',
+      field: 'created_at',
+    },
+    updatedAt: {
+      type: DataTypes.DATE,
+      allowNull: false,
+      defaultValue: null,
+      primaryKey: false,
+      autoIncrement: false,
+      comment: 'update time',
+      field: 'updated_at',
+    },
+  };
+  const options = {
+    tableName: 'user',
+    comment: 'user table',
+    indexes: [{
+      name: 'uk_name_email',
+      unique: true,
+      fields: [
+        'name',
+        'email',
+      ],
+    }]
+  };
+
+  const UserModel = sequelize.define('userModel', attributes, options);
+  return UserModel;
+};
