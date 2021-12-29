@@ -49,6 +49,14 @@ sagm -c /path/to/config
 # 运行效果
 
 ### 交互页面
+#### 选择生成部分表的Model还是全部表的Model
+![这是图片](/test/imgs/1.png "选择生成部分表的Model还是全部表的Model")
+
+#### 选择要生成的表，空格check
+![这是图片](/test/imgs/2.png "选择生成部分表的Model还是全部表的Model")
+
+#### 选择增量更新（读取已有文件，做增量更新）还是完全替换（用新生成的代码完全替换已有的）
+![这是图片](/test/imgs/3.png "选择生成部分表的Model还是全部表的Model")
 
 ### 生成代码
 ```javascript
