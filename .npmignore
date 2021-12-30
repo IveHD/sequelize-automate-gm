@@ -1,3 +1,4 @@
+test/imgs/*
 test/models/*.js
 *.swp
 .idea
