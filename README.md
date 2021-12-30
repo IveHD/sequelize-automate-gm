@@ -1,5 +1,11 @@
 # sequelize-automate-gm
-自动生成和更新著名 ORM 框架 [sequelizejs](https://github.com/sequelize/sequelize) 的 Model 代码。
+自动生成和更新著名 ORM 框架 [sequelizejs](https://github.com/sequelize/sequelize) 的 Model 代码。本项目脱胎于 [sequelize-automate](https://github.com/nodejh/sequelize-automate)，新增及优化内容如下：
+* 新增了 shell 交互，使用变得更简单。
+* 自动增量更新，使库表修改直接映射到 Model 对应的代码上，而你自己在 Model 内的修改不会受到影响。
+* ts Model 的生成直接将结构定义写在 Model 类内部，不再生成 *.d.ts 定义文件。
+* 修复了部分 ts 的 eslint 错误。
+
+`重要提示：自动生成的 Model 仍需要经过 review 检查，避免由于工具的未知问题，对你的代码产生负面影响。`
 
 # 安装
 ### 全局安装
