@@ -1,6 +1,6 @@
 {
   "name": "sequelize-automate-gm",
-  "version": "1.0.1",
+  "version": "1.0.2",
   "description": "Automatically generate and update sequelize models code.",
   "main": "index.js",
   "keywords": [
