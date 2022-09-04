@@ -50,7 +50,8 @@ const attributes = {
 const options = {
   modelName: 'student',
   sequelize: sequelizeClient,
-  indexes: []
+  indexes: [],
+  freezeTableName: true
 };
 Student.init(attributes, options);
 module.exports = Student;

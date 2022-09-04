@@ -13,7 +13,7 @@ module.exports = {
     }
   },
   "options": {
-    "type": "ts",
+    "type": "js",
     "dir": "./test/demo/model",
     "camelCase": true,
     "emptyDir": true,
@@ -22,5 +22,6 @@ module.exports = {
     "sequelizeModulePath": 'Sequelize',
     "sequelizeInsName": 'sequelizeClient',
     "sequelizeInsModulePath": '../lib/sequelize.js',
+    // "freezeTableName": true,
   }
 }

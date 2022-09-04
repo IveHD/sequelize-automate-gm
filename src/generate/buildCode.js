@@ -34,10 +34,12 @@ function generateCode(definition, options) {
       ClassBody: (path) => {
         const { node } = path;
         const newBody = node.body.filter((n) => !definition.attributes[n.key.name]);
-        _.forInRight(definition.attributes, (field, key) => {
-          const prop = buildAst.buildModelClassProperty(field, key);
-          newBody.unshift(prop);
-        });
+        if (options.type === 'ts') {
+          _.forInRight(definition.attributes, (field, key) => {
+            const prop = buildAst.buildModelClassProperty(field, key);
+            newBody.unshift(prop);
+          });
+        }
         node.body = newBody;
       },
       VariableDeclarator: (path) => {

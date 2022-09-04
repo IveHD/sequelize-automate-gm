@@ -29,10 +29,6 @@ module.exports = {
     "dialect": "mysql",     // 数据库方言
     "host": "localhost",    // 数据库服务地址
     "port": 3306,           // 数据库服务端口号
-    "define": {
-      "underscored": true,
-      "freezeTableName": true,
-    }
   },
   "options": {                  // 生成文件的配置信息
     "type": "js",               // 生成代码类型，支持 ts、js
@@ -42,6 +38,8 @@ module.exports = {
     "sequelizeModulePath": 'sequelize', // Sequelize 引入Sequelize模块的模，默认 sequelize
     "sequelizeInsName": 'sequelizeClient', // Sequelize实例的变量名，默认 sequelizeClient
     "sequelizeInsModulePath": '../lib/sequelize.js', // Sequelize实例的模块路径，无默认值，必填。
+
+    "freezeTableName": true, // 强制表名称等于模型名称，默认true
   }
 }
 ```
@@ -57,13 +55,23 @@ sagm -c /path/to/config
 
 ### 交互页面
 #### 选择生成部分表的Model还是全部表的Model
-![这是图片](/test/imgs/1.png "选择生成部分表的Model还是全部表的Model")
-
+```
+? 选择要生成的表 (Use arrow keys)
+❯ 部分表
+  所有表
+```
 #### 选择要生成的表，空格check
-![这是图片](/test/imgs/2.png "选择生成部分表的Model还是全部表的Model")
+```
+ ◯ goods
+❯◉ student
+ ◯ test_table
+ ```
 
 #### 选择增量更新（读取已有文件，做增量更新）还是完全替换（用新生成的代码完全替换已有的）
-![这是图片](/test/imgs/3.png "选择生成部分表的Model还是全部表的Model")
+```
+❯ 增量更新(读取源文件)
+  完全替换
+```
 
 ### 生成代码
 ```javascript

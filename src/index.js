@@ -26,6 +26,8 @@ class Automate {
       sequelizeModulePath: 'sequelize', // Sequelize 引入Sequelize模块的模块路径
       sequelizeInsName: 'sequelizeClient', // Sequelize实例的变量名
       sequelizeInsModulePath: '', // Sequelize实例的模块路径
+
+      freezeTableName: true, // 强制表名称等于模型名称，默认true
     };
 
     // https://sequelize.org/master/class/lib/sequelize.js~Sequelize.html#instance-constructor-constructor

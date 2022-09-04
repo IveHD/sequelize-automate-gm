@@ -19,6 +19,7 @@ const AUTO_GENERATE_OPTIONS_PROPERTIES = {
   modelName: 'modelName',
   sequelize: 'sequelize',
   indexes: 'indexes',
+  freezeTableName: 'freezeTableName',
 };
 
 
@@ -178,6 +179,10 @@ function processOptionsByDefinition(definition, options) {
     t.objectProperty(
       t.identifier(AUTO_GENERATE_OPTIONS_PROPERTIES.indexes),
       processOptionsPropertiesByDefinition(definition),
+    ),
+    t.objectProperty(
+      t.identifier(AUTO_GENERATE_OPTIONS_PROPERTIES.freezeTableName),
+      t.booleanLiteral(options.freezeTableName),
     ),
   ]);
 }
