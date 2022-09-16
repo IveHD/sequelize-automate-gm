@@ -1,8 +1,8 @@
 {
   "name": "sequelize-automate-gm",
-  "version": "1.0.3",
+  "version": "1.0.4",
   "description": "Automatically generate and update sequelize models code.",
-  "main": "index.js",
+  "main": "./src/index.js",
   "keywords": [
     "mysql",
     "postgres",
