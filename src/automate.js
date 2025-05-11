@@ -22,6 +22,7 @@ class Automate {
       tsNoCheck: false, // Whether add `@ts-nocheck` to model files, default is false.
       match: null, // Regex to match table name
       moduleType: 'es6',
+      sequelizeNameIsDefaultModel: false, // 引入的 sequelizeName 是否是 default，否则用结构
       sequelizeName: 'Sequelize', // Sequelize 引入Sequelize模块的变量名
       sequelizeModulePath: 'sequelize', // Sequelize 引入Sequelize模块的模块路径
       sequelizeInsName: 'sequelizeClient', // Sequelize实例的变量名

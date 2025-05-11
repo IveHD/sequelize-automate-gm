@@ -58,6 +58,14 @@ function generateCode(definition, options) {
             prop.value = t.objectExpression(processFieldProperties(field));
             prop.value.properties.push(...preValueDiffMethods);
           });
+          const newAttrs = buildAst.buildAttributes(definition)
+          const newProperties = newAttrs.declarations.reduce((acc, cur) => acc.concat(cur.init.properties), []);
+          newProperties.forEach((e, i) => {
+            const exists = node.init.properties.some(n => n.key.name === e.key.name);
+            if (!exists) {
+              node.init.properties.splice(i, 0, e);
+            }
+          });
         }
         if (t.isIdentifier(node.id, { name: 'options' })) {
           const nodes = node.init.properties.filter(

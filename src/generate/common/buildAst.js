@@ -17,13 +17,19 @@ const buildModelClassProperty = (field, key) => {
 
 const buildImports = (options) => {
   const {
-    sequelizeName, sequelizeModulePath, sequelizeInsName, sequelizeInsModulePath,
+    sequelizeName,
+    sequelizeModulePath,
+    sequelizeInsName,
+    sequelizeInsModulePath,
+    sequelizeNameIsDefaultModel,
   } = options;
   const { moduleType } = options;
   if (moduleType === 'es6') {
     return [
       t.importDeclaration(
-        [t.importSpecifier(t.identifier(sequelizeName), t.identifier(sequelizeName))],
+        sequelizeNameIsDefaultModel
+          ? [t.importDefaultSpecifier(t.identifier(sequelizeName))]
+          : [t.importSpecifier(t.identifier(sequelizeName), t.identifier(sequelizeName))],
         t.stringLiteral(sequelizeModulePath),
       ),
       t.importDeclaration(
